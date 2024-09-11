@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "catamaran"
+version = "0.1.0"
+description = "GitOps scripts for yacht users"
+authors = ["Hamed Ghasemzadeh <hg@evgnomon.org>"]
+readme = "README.md"
+homepage = "https://github.com/evgnomon/catamaran"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+orjson = "^3.10.7"
+aiohttp = "^3.10.5"
+typer = "^0.12.5"
+pyyaml = "^6.0.2"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.11.2"
+pytest = "^8.3.3"
+sphinx = "^8.0.2"
+poethepoet = "^0.28.0"
+furo = "^2024.8.6"
+ruff = { extras = ["format"], version = "^0.6.4" }
+types-pyyaml = "^6.0.12.20240808"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]
+
+[tool.poe.tasks]
+check = { shell = "ruff check . && mypy catamaran && pytest", help = "Run all checks (ruff, mypy, pytest)" }

@@ -61,6 +61,3 @@ dist/
 
 # mypy
 .mypy_cache/
-
-# Poetry lock
-poetry.lock

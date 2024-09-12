@@ -2,8 +2,8 @@ name: Publish to PyPI
 
 on:
   push:
-    # branches:
-    #   - main
+    tags:
+      - v*
 
 jobs:
   publish:
@@ -20,6 +20,10 @@ jobs:
           python-version: "3.x"
       - name: Install Poetry 
         run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
+      - name: Run checks with Poe
+        run: poetry run poe check
       - name: Publish to PyPI
         run: poetry publish --build
         env:

@@ -2,6 +2,8 @@ name: Push Commit
 
 on:
   push:
+    branches:
+      - *
 
 jobs:
   lint-and-test:

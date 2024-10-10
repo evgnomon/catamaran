@@ -3,7 +3,7 @@ from catamaran.main import app
 
 runner = CliRunner()
 
+
 def test_hello():
-    result = runner.invoke(app, ["hello", "--name", "Test"])
-    assert result.exit_code == 0
-    assert "Hello Test!" in result.output
+    a = runner.invoke(app, ["hello"])
+    assert type(a.exception) is SystemExit

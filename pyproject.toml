@@ -12,6 +12,7 @@ orjson = "^3.10.7"
 aiohttp = "^3.10.5"
 typer = "^0.12.5"
 pyyaml = "^6.0.2"
+httpx = "^0.27.2"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.11.2"
@@ -33,4 +34,4 @@ select = ["E", "F", "W"]
 ignore = ["E501"]
 
 [tool.poe.tasks]
-check = { shell = "ruff check . && mypy catamaran && pytest", help = "Run all checks (ruff, mypy, pytest)" }
+check = { shell = "ruff check . && mypy catamaran && pytest -s", help = "Run all checks (ruff, mypy, pytest)" }

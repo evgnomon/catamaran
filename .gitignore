@@ -61,3 +61,4 @@ dist/
 
 # mypy
 .mypy_cache/
+evgnomon-catamaran-*.tar.gz

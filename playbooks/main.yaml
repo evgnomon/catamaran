@@ -1,0 +1,11 @@
+- name: Yacht
+  hosts: localhost
+  tasks:
+    - name: Run checks
+      shell: |
+        poetry install
+        poetry run poe check
+      args:
+        chdir: "{{ workspace }}"
+  vars_files:
+    - defaults/main.yaml

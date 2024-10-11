@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - '*'
+  delete:
+    branches:
+      - '*'
+      - '!main'
 
 jobs:
   lint-and-test:
@@ -11,16 +15,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Run yacht
+        uses: evgnomon/yacht@main
         with:
-          python-version: "3.x"
-      - name: Install Poetry
-        run: pip install poetry
-      - name: Install dependencies
-        run: poetry install
-      - name: Run checks with Poe
-        run: poetry run poe check
+          vault: ${{ secrets.VAULT_FILE }}
+          vault_pass: ${{ secrets.VAULT_PASS }}
       - name: Cache Poetry dependencies
         uses: actions/cache@v3
         with:

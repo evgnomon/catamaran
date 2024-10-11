@@ -1,0 +1,1 @@
+workspace: "{{ lookup('env', 'PWD') }}"

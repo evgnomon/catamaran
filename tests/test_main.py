@@ -1,5 +1,5 @@
 from typer.testing import CliRunner
-from catamaran.main import app
+from catamaran import app
 
 runner = CliRunner()
 

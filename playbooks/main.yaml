@@ -2,8 +2,9 @@
   hosts: localhost
   gather_facts: false
   roles:
-    - role: secrets
-    - role: galaxy_module
+    - role: z_defaults
+    - role: z_secrets
+    - role: z_galaxy_col
       when:
         - event_git_tag
   tasks:
@@ -13,5 +14,6 @@
         poetry run poe check
       args:
         chdir: "{{ workspace }}"
+
   vars_files:
     - defaults/main.yaml

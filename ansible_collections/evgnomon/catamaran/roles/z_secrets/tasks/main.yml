@@ -1,0 +1,4 @@
+---
+- set_fact:
+    secrets: "{{ lookup('file', lookup('env','INPUT_VAULT_FILE')) | from_yaml }}"
+  no_log: true

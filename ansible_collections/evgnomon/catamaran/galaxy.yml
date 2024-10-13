@@ -1,6 +1,6 @@
 namespace: evgnomon
 name: catamaran
-version: 0.1.10
+version: 0.1.11
 readme: README.md
 min_ansible_version: 2.9
 authors:

@@ -194,12 +194,12 @@ class PushEvent:
 
 @dataclass
 class DeleteEvent:
-    organization: Organization
     pusher_type: str
     ref: Optional[str]
     ref_type: str
     repository: Repository
     sender: Sender
+    organization: Optional[Organization] = None
 
 
 @dataclass

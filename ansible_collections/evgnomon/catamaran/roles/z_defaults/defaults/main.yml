@@ -3,6 +3,6 @@ workspace: "{{ lookup('env', 'PWD') }}"
 github_event: "{{ lookup('file', lookup('env', 'GITHUB_EVENT_PATH')) | from_json if lookup('env', 'GITHUB_EVENT_PATH') else {} }}"
 z_event_type: "{{ lookup('env', 'YACHT_EVENT_NAME') or lookup('env', 'GITHUB_EVENT_NAME') | default('push') }}"
 z_ref_name: '{{ github_event.ref if "ref" in github_event else lookup("env", "YACHT_REF_NAME") }}'
-z_env_name:  '{{ yacht_ref_name.replace("refs/heads/","").replace("/","-").replace("_","-") }}'
+z_env_name:  '{{ z_ref_name.replace("refs/heads/","").replace("/","-").replace("_","-") }}'
 z_user_token: '{{ lookup("env", "INPUT_GITHUB_TOKEN") or (secrets.github_pat if secrets and "github_pat" in secrets else "")}}'
 z_purge: false

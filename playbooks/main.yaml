@@ -2,8 +2,8 @@
   hosts: localhost
   gather_facts: false
   roles:
-    - role: z_defaults
     - role: z_secrets
+    - role: z_defaults
     - role: z_galaxy_col
       when:
         - event_git_tag

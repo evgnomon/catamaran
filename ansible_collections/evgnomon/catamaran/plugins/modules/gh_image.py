@@ -7,6 +7,52 @@ from catamaran.github import GithubEnvVars
 from catamaran.ansible import AnsibleResult
 from catamaran import delete_image
 
+# Documentation for Ansible Galaxy
+DOCUMENTATION = """
+---
+module: gh_image
+short_description: Manage Github Container Registry images
+description:
+  - Manage Github Container Registry images
+options:
+  image:
+    description:
+      - Name of the image.
+    required: True
+  owner:
+    description:
+      - Owner of the image.
+    required: True
+  tag:
+    description:
+      - Tag of the image.
+    required: False
+  state:
+    description:
+      - State of the image.
+    required: False
+  token:
+    description:
+      - Github token.
+    required: True
+author:
+  - Hamed Ghasemzadeh (hg@evgnomon.org)
+"""
+EXAMPLES = """
+- name: Delete an image
+  evgnomon.catamaran.gh_image:
+    image: "my-image"
+    owner: "my-owner"
+    tag: "latest"
+    token: "my-token"
+"""
+RETURN = """
+result_key:
+  description: Description of the return value
+  type: str
+  returned: always
+"""
+
 
 def my_ansible_function(name, message="Hello"):
     return f"{message}, {name}!"

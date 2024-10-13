@@ -185,11 +185,11 @@ class PushEvent:
     deleted: bool
     forced: bool
     head_commit: Commit
-    organization: Organization
     pusher: Pusher
     ref: str
     repository: Repository
     sender: Sender
+    organization: Optional[Organization] = None
 
 
 @dataclass

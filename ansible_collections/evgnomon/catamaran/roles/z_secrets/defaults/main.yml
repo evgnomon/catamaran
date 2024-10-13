@@ -1,3 +1,0 @@
----
-github_event: "{{ lookup('file', lookup('env', 'GITHUB_EVENT_PATH')) | from_json if lookup('env', 'GITHUB_EVENT_PATH') else {} }}"
-event_git_tag: "{{ github_event.get('ref') | regex_search('^refs/tags/') }}"

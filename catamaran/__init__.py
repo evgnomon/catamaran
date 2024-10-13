@@ -7,7 +7,7 @@ app = typer.Typer()
 
 
 async def delete_image(tag: str, image_name, username, token):
-    api_url = f"https://api.github.com/user/{username}/packages/container/{image_name}/versions"
+    api_url = f"https://api.github.com/users/{username}/packages/container/{image_name}/versions"
     async with httpx.AsyncClient() as client:
         headers = {
             "Authorization": f"token {token}",

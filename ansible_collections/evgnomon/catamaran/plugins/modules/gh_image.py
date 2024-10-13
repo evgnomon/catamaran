@@ -42,7 +42,7 @@ async def run_module():
             result.skipped = True
             module.exit_json(**result.to_dict())
 
-        if tag is None:
+        if not tag:
             tag = env_vars.ref_name()
 
         await delete_image(

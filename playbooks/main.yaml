@@ -1,5 +1,11 @@
 - name: Yacht
   hosts: localhost
+  gather_facts: false
+  roles:
+    - role: secrets
+    - role: galaxy_module
+      when:
+        - event_git_tag
   tasks:
     - name: Run checks
       shell: |

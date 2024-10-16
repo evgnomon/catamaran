@@ -5,5 +5,5 @@ z_event_type: "{{ lookup('env', 'YACHT_EVENT_NAME') or lookup('env', 'GITHUB_EVE
 z_ref_name: '{{ github_event.ref if "ref" in github_event else lookup("env", "YACHT_REF_NAME") }}'
 z_env_name:  '{{ z_ref_name.replace("refs/heads/","").replace("/","-").replace("_","-") }}'
 z_user_token: '{{ lookup("env", "INPUT_GITHUB_TOKEN") or (secrets.github_pat if secrets and "github_pat" in secrets else "")}}'
-z_tag: "{{ github_event.get('ref') | regex_search('^refs/tags/') }}"
+z_tag: "{{ (github_event.get('ref') | regex_replace('refs/tags/', '')) if 'refs/tags' in github_event.get('ref','') else '' }}"
 z_purge: false

@@ -1,19 +1,20 @@
 - name: Yacht
   hosts: localhost
   gather_facts: false
+  collections:
+    - evgnomon.catamaran
   roles:
     - role: z_secrets
     - role: z_defaults
-    - role: z_galaxy_col
-      when:
-        - z_tag
   tasks:
-    - name: Run checks
+    - name: poetry install
       shell: |
         poetry install
+      args:
+        chdir: "{{ workspace }}"
+    - name: Checks
+      tags: z
+      shell: |
         poetry run poe check
       args:
         chdir: "{{ workspace }}"
-
-  vars_files:
-    - defaults/main.yaml

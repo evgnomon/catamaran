@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: evgnomon.catamaran.z_facts
+  - role: evgnomon.catamaran.z_secrets
+  - role: evgnomon.catamaran.z_defaults

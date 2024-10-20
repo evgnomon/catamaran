@@ -1,5 +1,6 @@
 ---
 workspace: "{{ lookup('env', 'PWD') }}"
+zygote_home: "/var/lib/zygote"
 github_event: "{{ lookup('file', lookup('env', 'GITHUB_EVENT_PATH')) | from_json if lookup('env', 'GITHUB_EVENT_PATH') else {} }}"
 z_event_type: "{{ lookup('env', 'YACHT_EVENT_NAME') or lookup('env', 'GITHUB_EVENT_NAME') | default('push') }}"
 z_ref_name: '{{ github_event.ref if "ref" in github_event else lookup("env", "YACHT_REF_NAME") }}'

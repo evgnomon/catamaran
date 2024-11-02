@@ -1,4 +1,4 @@
-- name: Yacht
+- name: Build
   hosts: localhost
   gather_facts: false
   collections:
@@ -18,3 +18,12 @@
         poetry run poe check
       args:
         chdir: "{{ workspace }}"
+
+- name: Publish Galaxy Collection
+  hosts: localhost
+  gather_facts: false
+  collections:
+    - evgnomon.catamaran
+  roles:
+    - role: z_defaults
+    - role: z_galaxy_col

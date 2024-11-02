@@ -25,5 +25,4 @@
   collections:
     - evgnomon.catamaran
   roles:
-    - role: z_defaults
     - role: z_galaxy_col

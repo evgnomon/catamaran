@@ -1,3 +1,5 @@
+dependencies:
+  - role: evgnomon.catamaran.z_facts
 galaxy_info:
   author: Hamed Ghasemzadeh
   description: This role sets default variables for the Catamaran project.

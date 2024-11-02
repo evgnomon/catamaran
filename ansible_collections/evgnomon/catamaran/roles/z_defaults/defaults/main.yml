@@ -10,3 +10,19 @@ z_user_token: '{{ lookup("env", "INPUT_GITHUB_TOKEN") or (secrets.github_pat if 
 z_tag: "{{ (github_event.get('ref') | regex_replace('refs/tags/', '')) if 'refs/tags' in github_event.get('ref','') else '' }}"
 z_purge: false
 z_bin_dir: /usr/local/bin
+z_os: >-
+  {{
+    {
+      'Darwin': 'darwin',
+      'Debian': 'linux',
+      'Windows': 'windows'
+    }[ansible_os_family] | default('')
+  }}
+z_arch: >-
+  {{
+    {
+      'x86_64': 'amd64',
+      'aarch64': 'arm64',
+      'i386': '386'
+    }[ansible_architecture] | default('')
+  }}

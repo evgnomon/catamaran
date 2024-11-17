@@ -20,7 +20,7 @@
 
 - name: Download Zygote Binary
   shell: |
-    eget evgnomon/zygote -a zygote- -a "{{ ansible_os_family }}"  -a {{ ansible_architecture  }} --to {{ ansible_env.HOME }}/.local/bin/zygote
+    eget evgnomon/zygote -a zygote- -a "{{ z_os }}"  -a {{ z_arch }} --to {{ ansible_env.HOME }}/.local/bin/zygote
   environment:
     PATH: '{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}'
 

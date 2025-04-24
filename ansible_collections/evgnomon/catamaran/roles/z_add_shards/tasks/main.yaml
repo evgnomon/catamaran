@@ -1,0 +1,7 @@
+---
+- name: Add shards
+  add_host:
+    name: "{{ item | trim }}"
+    groups: shards
+    ansible_user: "root"
+  with_items: "{{ shard_hosts | trim | split(',') }}"

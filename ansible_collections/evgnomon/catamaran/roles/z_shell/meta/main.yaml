@@ -1,3 +1,4 @@
 ---
+description: Run a shell script in a Z environment
 dependencies:
   - role: evgnomon.catamaran.zygote

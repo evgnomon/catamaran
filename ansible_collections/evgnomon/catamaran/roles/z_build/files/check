@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+export GOFLAGS="-buildvcs=false"
+go fmt ./...
+golangci-lint run
+go test -v ./...

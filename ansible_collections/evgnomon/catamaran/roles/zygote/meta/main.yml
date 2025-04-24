@@ -1,4 +1,5 @@
 ---
+description: Setup a zygote environment for test and development
 dependencies:
   - role: evgnomon.catamaran.z_facts
   - role: evgnomon.catamaran.z_secrets

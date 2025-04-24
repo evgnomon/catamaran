@@ -1,0 +1,78 @@
+---
+- name: Update Hetzner servers
+  hcloud_server:
+    api_token: "{{ secrets.hetzner.prod }}"
+    name: "{{ vm_name }}"
+    server_type: cpx11
+    image: debian-12
+    location: "{{ item.get('location', 'nbg1') }}"
+    state: '{{ item.get("state") if "state" in item else "absent" if z_event_type == "delete" else "present" }}'
+    ssh_keys: "{{ item.ssh_keys }}"
+    labels: "{{ dict(item.labels | zip(['true'] * (item.labels | length))) }}"
+  vars:
+    vm_name: '{{ item.name + "-" + z_env_name if z_env_name != "main" else item.name }}'
+  register: server_info
+  with_items: "{{ z_nodes.hetzner }}"
+
+- name: Add hosts to the inventory
+  add_host:
+    name: "{{ item.item.name }}"
+    groups: "{{ item.item.labels }}"
+    ansible_host: "{{ ansible_host }}"
+    ansible_user: "{{ ansible_user }}"
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+    ansible_python_interpreter: /usr/bin/python3
+  vars:
+    ansible_host: "{{ item.hcloud_server.ipv4_address }}"
+    ansible_user: "root"
+  with_items: "{{ server_info.results | selectattr('hcloud_server.ipv4_address', 'defined') | list }}"
+  when: z_event_type == "push"
+
+- name: Set z_dns_a_records fact from server_info results
+  set_fact:
+    z_dns_records: "{{ z_dns_a_records | default([]) + [{'record_name': item.hcloud_server.name, 'record_ip': item.hcloud_server.ipv4_address}] }}"
+  with_items: "{{ server_info.results | selectattr('hcloud_server.ipv4_address', 'defined') | list }}"
+  when: z_event_type == "push"
+
+- name: Update Droplets
+  vars:
+    vm_name: '{{ item.name + "-" + z_env_name if z_env_name != "main" else item.name }}'
+  community.digitalocean.digital_ocean_droplet:
+    state: "{{ item.get('state') if 'state' in item else 'absent' if z_event_type == 'delete' else 'present' }}"
+    api_token: "{{ secrets.doctl.prod }}"
+    name: "{{ vm_name }}"
+    region: "{{ item.get('location', 'fra1') }}"
+    size: s-2vcpu-4gb
+    image: debian-12-x64
+    unique_name: true
+    ssh_keys: "{{ item.ssh_keys }}"
+    tags: "{{ item.labels }}"
+  register: droplet_info
+  with_items: "{{ z_nodes.digitalocean }}"
+
+- name: Display Droplet IP
+  ansible.builtin.debug:
+    msg: "Droplet IP Address: {{ droplet_info.results[0] }}"
+  when: z_event_type == "push"
+
+- name: Add Droplets to the inventory
+  add_host:
+    name: "{{ item.item.name }}"
+    groups: "{{ item.item.labels }}"
+    ansible_host: "{{ ansible_host }}"
+    ansible_user: "{{ ansible_user }}"
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+    ansible_python_interpreter: /usr/bin/python3
+  vars:
+    ansible_host: "{{ item.data.droplet.networks.v4 | selectattr('type', 'equalto', 'public') | map(attribute='ip_address') | first }}"
+    ansible_user: "root"
+  with_items: "{{ droplet_info.results | selectattr('data.droplet.networks.v4', 'defined') | list }}"
+  when: z_event_type == "push"
+
+- name: Set z_dns_records fact from droplet_info results
+  set_fact:
+    z_dns_a_records: "{{ z_dns_a_records | default([]) + [{'record_name': item.item.name, 'record_ip': ansible_host}] }}"
+  with_items: "{{ droplet_info.results | selectattr('data.droplet.networks.v4', 'defined') | list }}"
+  when: z_event_type == "push"
+  vars:
+    ansible_host: "{{ item.data.droplet.networks.v4 | selectattr('type', 'equalto', 'public') | map(attribute='ip_address') | first }}"

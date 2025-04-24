@@ -1,0 +1,8 @@
+---
+- name: Install podman
+  become: true
+  package:
+    name: podman
+    state: present
+    update_cache: true
+    cache_valid_time: 3600

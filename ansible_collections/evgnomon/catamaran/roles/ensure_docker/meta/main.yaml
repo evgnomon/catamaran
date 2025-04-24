@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Hamed Ghasemzadeh
-  description: Add SSH keys from secrets to ssh-agent
+  description: Install docker-ce
   license_fil: COPYING
   min_ansible_version: 2.9
   platforms:
@@ -15,5 +15,3 @@ galaxy_info:
   tags:
     - defaults
     - configuration
-dependencies:
-  - role: z_sshadd

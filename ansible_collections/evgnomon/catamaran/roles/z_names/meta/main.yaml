@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Hamed Ghasemzadeh
-  description: Add SSH keys from secrets to ssh-agent
+  description: Create DNS records for virtual machines
   license_fil: COPYING
   min_ansible_version: 2.9
   platforms:
@@ -16,4 +16,5 @@ galaxy_info:
     - defaults
     - configuration
 dependencies:
-  - role: z_sshadd
+  - role: evgnomon.catamaran.z_defaults
+  - role: evgnomon.catamaran.z_secrets

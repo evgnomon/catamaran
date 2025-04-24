@@ -1,6 +1,5 @@
 dependencies:
   - role: evgnomon.catamaran.z_defaults
-
 galaxy_info:
   author: Hamed Ghasemzadeh
   description: Publish to Ansible Galaxy

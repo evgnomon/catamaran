@@ -1,9 +1,7 @@
 ---
-dependencies:
-  - role: evgnomon.catamaran.z_defaults
 galaxy_info:
   author: Hamed Ghasemzadeh
-  description: Build the project
+  description: Add shards hostnames to the inventory
   license_file: COPYING
   min_ansible_version: 2.9
   platforms:

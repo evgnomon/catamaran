@@ -1,10 +1,7 @@
----
-dependencies:
-  - role: evgnomon.catamaran.z_defaults
 galaxy_info:
   author: Hamed Ghasemzadeh
-  description: Build the project
-  license_file: COPYING
+  description: Create /var/lib directory for the tenant
+  license_fil: COPYING
   min_ansible_version: 2.9
   platforms:
     - name: EL

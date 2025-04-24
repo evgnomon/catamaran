@@ -1,10 +1,8 @@
 ---
-dependencies:
-  - role: evgnomon.catamaran.z_defaults
 galaxy_info:
   author: Hamed Ghasemzadeh
-  description: Build the project
-  license_file: COPYING
+  description: Add ssh key to ssh-agent in the controller
+  license_fil: COPYING
   min_ansible_version: 2.9
   platforms:
     - name: EL

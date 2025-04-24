@@ -4,7 +4,7 @@ import asyncio
 import os
 import platform
 import docker
-from docker.errors import APIError, ImageNotFound
+from docker.errors import APIError
 from ansible.module_utils.basic import AnsibleModule
 from catamaran.github import GithubEnvVars
 from catamaran.ansible import AnsibleResult

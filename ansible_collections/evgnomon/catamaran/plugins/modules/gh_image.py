@@ -100,6 +100,7 @@ result:
 async def run_module():
     module_args = dict(
         image=dict(type="str", required=True),
+        user=dict(type="str", required=False),
         owner=dict(type="str", required=True),
         tag=dict(type="str", required=True),
         state=dict(type="str", default="present", choices=["present", "absent"]),
@@ -120,6 +121,7 @@ async def run_module():
     token = module.params["token"]
     dockerfile = module.params["dockerfile"]
     context = module.params["context"]
+    actor = module.params.get("user", owner)
 
     docker_sock = os.getenv("DOCKER_SOCK", get_docker_socket())
     docker_client = docker.APIClient(base_url=docker_sock)
@@ -136,7 +138,7 @@ async def run_module():
 
             # Login to GitHub Container Registry
             try:
-                docker_client.login(username=owner, password=token, registry="ghcr.io")
+                docker_client.login(username=actor, password=token, registry="ghcr.io")
             except APIError as e:
                 module.fail_json(
                     msg=f"Failed to login to ghcr.io: {str(e)}. Ensure the token has correct permissions."
@@ -164,7 +166,7 @@ async def run_module():
             try:
                 result.msg = f"Pushing image {full_image_name}"
                 auth_config = {
-                    "username": owner,
+                    "username": actor,
                     "password": token,
                 }
                 push_logs = docker_client.push(
@@ -200,7 +202,7 @@ async def run_module():
             await delete_image(
                 tag,
                 image_name,
-                owner,
+                actor,
                 token=token,
             )
             result.msg = f"Image {full_image_name} deleted."

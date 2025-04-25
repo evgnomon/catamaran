@@ -105,6 +105,7 @@ async def run_module():
         tag=dict(type="str", required=True),
         state=dict(type="str", default="present", choices=["present", "absent"]),
         token=dict(type="str", required=True, no_log=True),
+        publish=dict(type="str", required=False, no_log=True),
         dockerfile=dict(type="str", default="Dockerfile"),
         context=dict(type="str", default="."),
     )
@@ -163,23 +164,24 @@ async def run_module():
                 module.fail_json(msg=f"Failed to build image: {str(e)}")
 
             # Push image to GitHub Packages
-            try:
-                result.msg = f"Pushing image {full_image_name}"
-                push_logs = docker_client.push(
-                    repository=f"ghcr.io/{owner}/{image_name}",
-                    tag=tag,
-                    stream=True,
-                    decode=True,
-                )
-                for line in push_logs:
-                    if "error" in line:
-                        module.fail_json(msg=f"Push error: {line.get('error')}")
-                result.changed = True
-                result.msg = f"Successfully built and pushed {full_image_name}"
-            except APIError as e:
-                module.fail_json(
-                    msg=f"Failed to push image: {str(e)}. Ensure the token has 'write:packages' scope."
-                )
+            if module.params.get("publish"):
+                try:
+                    result.msg = f"Pushing image {full_image_name}"
+                    push_logs = docker_client.push(
+                        repository=f"ghcr.io/{owner}/{image_name}",
+                        tag=tag,
+                        stream=True,
+                        decode=True,
+                    )
+                    for line in push_logs:
+                        if "error" in line:
+                            module.fail_json(msg=f"Push error: {line.get('error')}")
+                    result.changed = True
+                    result.msg = f"Successfully built and pushed {full_image_name}"
+                except APIError as e:
+                    module.fail_json(
+                        msg=f"Failed to push image: {str(e)}. Ensure the token has 'write:packages' scope."
+                    )
 
         elif state == "absent":
             if not env_vars.is_delete_event():

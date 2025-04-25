@@ -165,16 +165,11 @@ async def run_module():
             # Push image to GitHub Packages
             try:
                 result.msg = f"Pushing image {full_image_name}"
-                auth_config = {
-                    "username": actor,
-                    "password": token,
-                }
                 push_logs = docker_client.push(
                     repository=f"ghcr.io/{owner}/{image_name}",
                     tag=tag,
                     stream=True,
                     decode=True,
-                    auth_config=auth_config,
                 )
                 for line in push_logs:
                     if "error" in line:

@@ -1,5 +1,18 @@
 ---
-- name: Create zygote base directory
+- name: Create service group
+  group:
+    name: "{{ z_user }}"
+    state: present
+    system: yes
+- name: Create service user
+  user:
+    name: "{{ z_user }}"
+    state: present
+    shell: /sbin/nologin
+    create_home: no
+    group: "{{ z_user }}"
+    system: yes
+- name: Create base directory
   file:
     path: "{{ z_backup_dir }}"
     state: directory

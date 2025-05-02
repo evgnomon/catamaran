@@ -12,7 +12,7 @@
   copy:
     src: '{{ lookup("env", "HOME") }}/.config/zygote/certs/functions/{{ inventory_hostname }}'
     dest: '{{ zygote_home }}/certs/functions/'
-    owner: zygote
-    group: zygote
+    owner: "{{ z_user }}"
+    group: "{{ z_user }}"
     mode: "0600"
   become: true

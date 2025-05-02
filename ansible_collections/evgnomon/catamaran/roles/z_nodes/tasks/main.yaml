@@ -28,9 +28,9 @@
   with_items: "{{ server_info.results | selectattr('hcloud_server.ipv4_address', 'defined') | list }}"
   when: z_event_type == "push"
 
-- name: Set z_dns_a_records fact from server_info results
+- name: Set z_dns_records fact from server_info results
   set_fact:
-    z_dns_a_records: "{{ z_dns_a_records | default([]) + [{'record_name': item.hcloud_server.name, 'record_ip': item.hcloud_server.ipv4_address}] }}"
+    z_dns_records: "{{ z_dns_records | default([]) + [{'record_name': item.hcloud_server.name, 'record_value': item.hcloud_server.ipv4_address}] }}"
   with_items: "{{ server_info.results | selectattr('hcloud_server.ipv4_address', 'defined') | list }}"
   when: z_event_type == "push"
 
@@ -71,7 +71,7 @@
 
 - name: Set z_dns_records fact from droplet_info results
   set_fact:
-    z_dns_a_records: "{{ z_dns_a_records | default([]) + [{'record_name': item.item.name, 'record_ip': ansible_host}] }}"
+    z_dns_records: "{{ z_dns_records | default([]) + [{'record_name': item.item.name, 'record_value': ansible_host}] }}"
   with_items: "{{ droplet_info.results | selectattr('data.droplet.networks.v4', 'defined') | list }}"
   when: z_event_type == "push"
   vars:

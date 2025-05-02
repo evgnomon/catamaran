@@ -11,7 +11,7 @@
     name: evgnomon.catamaran.z_defaults
 
 - name: Docker pull
-  no_log: false
+  no_log: true
   shell: |
     docker login ghcr.io -u {{ secrets.docker_login.user }} -p {{ secrets.docker_login.pass if "pass" in secrets.docker_login else z_user_token }}
     docker pull mysql:8.0.33

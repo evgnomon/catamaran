@@ -4,6 +4,7 @@
     name: "{{ image_name }}"
     state: present
     pull: yes
+    force: true
   register: pull_result
   when:
     - github_actor

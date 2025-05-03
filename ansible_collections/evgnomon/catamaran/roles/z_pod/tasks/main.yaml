@@ -1,4 +1,11 @@
 ---
+- name: Create netork
+  containers.podman.podman_network:
+    name: "{{ network_name }}"
+    state: present
+  when:
+    - github_actor
+    - z_track == "main"
 - name: Pull container
   containers.podman.podman_image:
     name: "{{ image_name }}"
@@ -19,6 +26,7 @@
     recreate: True
     detach: True
     restart_policy: "always"
+    network: "{{ network_name }}"
   register: container_result
   changed_when: container_result.changed
   when:

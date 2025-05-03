@@ -1,6 +1,6 @@
 namespace: evgnomon
 name: catamaran
-version: 0.1.35
+version: 0.1.36
 readme: README.md
 authors:
   - Hamed Ghasemzadeh <hg@evgnomon.org>

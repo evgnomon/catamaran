@@ -1,1 +1,2 @@
 zygote_home: /var/lib/zygote
+function_name: "{{ inventory_hostname }}"

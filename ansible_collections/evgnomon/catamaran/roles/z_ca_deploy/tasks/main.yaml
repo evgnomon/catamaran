@@ -10,7 +10,7 @@
 
 - name: Deploy function certificates
   copy:
-    src: '{{ lookup("env", "HOME") }}/.config/zygote/certs/functions/{{ inventory_hostname }}'
+    src: '{{ lookup("env", "HOME") }}/.config/zygote/certs/functions/{{ function_name }}'
     dest: '{{ zygote_home }}/certs/functions/'
     owner: "{{ z_user }}"
     group: "{{ z_user }}"

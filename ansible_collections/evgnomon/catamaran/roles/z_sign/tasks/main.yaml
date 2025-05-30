@@ -1,0 +1,7 @@
+---
+- name: Sign certificates
+  cert_sign:
+    domain: "{{ domain }}"
+    token: "{{ token }}"
+    num_shards: "{{ num_shards }}"
+    num_replicas: "{{ num_replicas }}"

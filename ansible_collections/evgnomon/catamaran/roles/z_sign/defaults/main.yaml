@@ -1,0 +1,4 @@
+---
+domain: "{{ z_user }}"
+num_shards: "{{ z_num_shards }}"
+num_replicas: "{{ z_shard_size }}"

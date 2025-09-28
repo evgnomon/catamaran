@@ -1,4 +1,7 @@
 ---
-domain: "{{ z_user }}"
-num_shards: "{{ z_num_shards }}"
-num_replicas: "{{ z_shard_size }}"
+domain: "{{ z_domain }}"
+shard: "{{ z_shard }}"
+replica: "{{ z_replica }}"
+node_type: "{{ z_node_type }}"
+tenant: "{{ z_user }}"
+token: ""

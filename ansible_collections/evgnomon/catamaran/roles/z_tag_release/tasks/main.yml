@@ -1,7 +1,9 @@
 ---
 - name: Create release from dist directory on tag push
   tags: publish
-  when: z_tag
+  when:
+    - z_tag is defined
+    - z_tag != ""
   with_fileglob:
     - "{{ workspace }}/dist/*"
   evgnomon.catamaran.pkg_release:

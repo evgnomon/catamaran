@@ -21,11 +21,19 @@ z_repo_slug: "{{ z_repo_owner }}/{{ z_repo_name }}"
 z_num_shards: 3
 z_user: "{{ z_repo_slug.split('/')[1] }}"
 z_domain: "{{ z_user }}.run"
+z_node: "{{ inventory_hostname.split('.')[0] | trim }}"
+z_node_type: "{{ z_node.split('-')[0] }}"
+z_replica: "{{ z_node.split('-')[1] }}"
+z_shard: "{{ z_node.split('-')[2] if z_node.split('-') | length > 2 else 0 }}"
+z_suffix: "{{ z_replica }}{{ '-' + z_shard if z_shard | int > 0 else '' }}"
 z_shard_size: 3
 z_backup_dir: /var/lib/{{ z_user }}
 z_certs_dir: "{{ z_backup_dir }}/certs"
 z_ca_dir: "{{ z_certs_dir }}/ca"
 z_keychain_dir: "{{ z_certs_dir }}/functions"
+z_certs_src: "{{ lookup('env', 'HOME') }}/.config/zygote/certs"
+z_certs_func_src: "{{ z_certs_src }}/functions"
+z_certs_ca_src: "{{ z_certs_src }}/ca"
 z_os: >-
   {{
     {

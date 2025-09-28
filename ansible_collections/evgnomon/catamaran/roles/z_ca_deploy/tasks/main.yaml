@@ -1,18 +1,37 @@
 ---
+- include_role:
+    name: z_sign
+  vars:
+    token: "{{ function_name }}"
+
+- name: Debug z_certs_ca_src variable
+  debug:
+    var: z_certs_ca_src
+
+- name: Debug ca_cert_file variable
+  debug:
+    var: ca_cert_file
+
+
+- name: Debug dest variable
+  debug:
+    var: dest
+
 - name: Copy CA certificate to remote machines
   copy:
-    src: '{{ lookup("env", "HOME") }}/.config/zygote/certs/ca/ca_cert.pem'
-    dest: '{{ zygote_home }}/certs/ca/ca_cert.pem'
+    src: '{{ z_certs_ca_src }}/ca_cert.pem'
+    dest: '{{ ca_cert_file }}'
     owner: root
     group: root
     mode: "0644"
   become: true
 
+
 - name: Deploy function certificates
   copy:
-    src: '{{ lookup("env", "HOME") }}/.config/zygote/certs/functions/{{ function_name }}'
-    dest: '{{ zygote_home }}/certs/functions/'
-    owner: "{{ z_user }}"
-    group: "{{ z_user }}"
+    src: '{{ z_certs_func_src }}/{{ cert_name }}'
+    dest: '{{ dest }}'
+    owner: "{{ user }}"
+    group: "{{ group }}"
     mode: "0600"
   become: true

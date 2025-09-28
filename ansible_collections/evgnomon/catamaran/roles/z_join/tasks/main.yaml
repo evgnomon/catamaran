@@ -6,4 +6,8 @@
     chdir: /tmp
   environment:
     ZYGOTE_CONFIG_HOME: "{{ z_backup_dir }}"
-
+    Z_NO_COLOR: "1"
+    Z_DOMAIN: "{{ inventory_hostname.split('.')[1:] | join('.') }}"
+    Z_HOST: "{{ inventory_hostname }}"
+  tags:
+    - join

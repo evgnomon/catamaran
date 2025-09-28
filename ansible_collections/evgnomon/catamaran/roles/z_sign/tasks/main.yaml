@@ -1,7 +1,10 @@
 ---
-- name: Sign certificates
-  cert_sign:
+- name: Sign certificate
+  delegate_to: localhost
+  sign_cert:
     domain: "{{ domain }}"
     token: "{{ token }}"
-    num_shards: "{{ num_shards }}"
-    num_replicas: "{{ num_replicas }}"
+    shard: "{{ shard }}"
+    replica: "{{ replica }}"
+    node_type: "{{ node_type }}"
+    tenant : "{{ tenant }}"

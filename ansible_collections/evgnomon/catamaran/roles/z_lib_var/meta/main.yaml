@@ -14,3 +14,5 @@ galaxy_info:
   tags:
     - defaults
     - configuration
+dependencies:
+  - role: evgnomon.catamaran.z_defaults

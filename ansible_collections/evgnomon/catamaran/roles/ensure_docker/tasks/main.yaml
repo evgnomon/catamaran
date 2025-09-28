@@ -14,14 +14,21 @@
       - lsb-release
     state: present
 
-- name: Add Docker's official GPG key
-  apt_key:
+- name: Create apt keyrings directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Docker GPG key
+  get_url:
     url: https://download.docker.com/linux/debian/gpg
-    state: present
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
 
 - name: Set up the stable repository
   apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ debian_codename }} stable"
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ debian_codename }} stable"
     state: present
     filename: docker
     update_cache: yes
@@ -35,12 +42,6 @@
       - docker-compose-plugin
     state: present
 
-- name: Ensure Docker service is running and enabled
-  systemd:
-    name: docker
-    state: started
-    enabled: yes
-
 - name: Create Docker daemon configuration directory
   file:
     path: /etc/docker
@@ -51,13 +52,9 @@
   copy:
     content: |
       {
-        "log-driver": "json-file",
-        "log-opts": {
-          "max-size": "{{ docker_log_max_size }}",
-          "max-file": "{{ docker_log_max_file }}"
-        },
-        "live-restore": true,
-        "default-ulimit": ["nofile={{ docker_ulimit_nofile }}"]
+        "log-driver": "journald",
+        "default-ulimit": ["nofile=1024:4096"],
+        "live-restore": true
       }
     dest: /etc/docker/daemon.json
     mode: '0644'
@@ -69,3 +66,9 @@
     groups: docker
     append: yes
   when: docker_user is defined
+
+- name: Ensure Docker service is running and enabled
+  systemd:
+    name: docker
+    state: started
+    enabled: yes

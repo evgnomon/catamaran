@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import socket
 from ansible.module_utils.basic import AnsibleModule
 
 DOCUMENTATION = r"""
@@ -37,17 +38,32 @@ options:
       - Must be a non-negative integer.
     required: true
     type: int
+  tenant:
+    description:
+      - The tenant name used as a prefix for certificate names.
+      - If not specified, defaults to 'zygote'.
+      - Example: `mytenant` results in certificate names like `mytenant-abc123-a`.
+    required: false
+    type: str
+    default: zygote
+  node_type:
+    description:
+      - The node type used in subdomain generation.
+      - If not specified, defaults to 'shard'.
+      - Example: `node` results in subdomains like `node-a.example.com`.
+    required: false
+    type: str
+    default: shard
 author:
   - Hamed Ghasemzadeh (hg@evgnomon.org)
 notes:
   - This module executes commands using the `z cert sign` tool. Ensure it is installed and accessible on the target system.
-  - Commands include a `dig +short` subshell to resolve IP addresses, requiring the `dig` command to be available.
+  - Domain names are resolved to IP addresses using Python's socket module for DNS resolution.
   - In check mode, the module returns the list of commands without executing them.
   - If any command fails (non-zero return code), the module fails unless configured otherwise.
 requirements:
   - python >= 3.6
   - z cert sign tool
-  - dig command
 seealso:
   - name: Ansible command module
     description: Details on how commands are executed
@@ -62,6 +78,17 @@ EXAMPLES = r"""
     token: abc123
     num_shards: 3
     num_replicas: 2
+  register: cert_result
+
+# Generate certificates with custom tenant and node type
+- name: Generate certificates with custom tenant and node type
+  evgnomon.catamaran.z_sign:
+    domain: example.com
+    token: abc123
+    num_shards: 2
+    num_replicas: 1
+    tenant: mytenant
+    node_type: node
   register: cert_result
 
 # Display the execution results
@@ -87,8 +114,9 @@ commands:
   elements: str
   returned: always
   sample:
-    - "z cert sign --name zygote-abc123-a --name shard-a.example.com --ip 127.0.0.1 --ip $(dig +short shard-a.example.com)"
-    - "z cert sign --name zygote-abc123-a-1 --name shard-a-1.example.com --ip 127.0.0.1 --ip $(dig +short shard-a-1.example.com)"
+    - "z cert sign --name zygote-abc123-a --name shard-a.example.com --ip 127.0.0.1 --ip 192.168.1.100"
+    - "z cert sign --name zygote-abc123-a-1 --name shard-a-1.example.com --ip 127.0.0.1 --ip 192.168.1.101"
+    - "z cert sign --name mytenant-abc123-a --name node-a.example.com --ip 127.0.0.1 --ip 192.168.1.100"
 results:
   description: A list of dictionaries containing the execution results for each command (empty in check mode).
   type: list
@@ -130,6 +158,28 @@ def num_to_letter(num):
     return chr(96 + num)
 
 
+def resolve_domain_ip(domain):
+    """Resolve domain name to IP address using Python's socket module"""
+    try:
+        # Get all IP addresses for the domain
+        ip_addresses = socket.getaddrinfo(
+            domain, None, socket.AF_INET, socket.SOCK_STREAM
+        )
+        # Return the first IPv4 address
+        for addr_info in ip_addresses:
+            if addr_info[0] == socket.AF_INET:
+                return addr_info[4][0]
+        # If no IPv4 found, return the first available
+        if ip_addresses:
+            return ip_addresses[0][4][0]
+        else:
+            raise ValueError(f"Unable to resolve domain '{domain}' to any IP address")
+    except socket.gaierror as e:
+        raise ValueError(f"DNS resolution failed for domain '{domain}': {e}")
+    except Exception as e:
+        raise ValueError(f"Error resolving domain '{domain}': {e}")
+
+
 def run_module():
     # Define module arguments
     module_args = dict(
@@ -137,6 +187,8 @@ def run_module():
         token=dict(type="str", required=True),
         num_shards=dict(type="int", required=True),
         num_replicas=dict(type="int", required=True),
+        tenant=dict(type="str", required=False, default="zygote"),
+        node_type=dict(type="str", required=False, default="shard"),
     )
 
     # Initialize result dictionary
@@ -144,12 +196,13 @@ def run_module():
 
     # Initialize Ansible module
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
-
-    # Get module parameters
+    # Get parameters
     domain = module.params["domain"]
     token = module.params["token"]
     num_shards = module.params["num_shards"]
     num_replicas = module.params["num_replicas"]
+    tenant = module.params.get("tenant")
+    node_type = module.params.get("node_type")
 
     # Validate numeric inputs
     if num_shards <= 0 or num_replicas < 0:
@@ -165,21 +218,35 @@ def run_module():
             shard_letter = num_to_letter(shard)
 
             # Generate certificate for shard without replica suffix
-            shard_name = f"zygote-{token}-{shard_letter}"
-            replica_domain = f"shard-{shard_letter}.{domain}"
+            shard_name = f"{tenant}-{token}-{shard_letter}"
+            replica_domain = f"{node_type}-{shard_letter}.{domain}"
+            try:
+                resolved_ip = resolve_domain_ip(replica_domain)
+            except ValueError as e:
+                result["msg"] = (
+                    f"Failed to resolve IP for shard domain {replica_domain}: {e}"
+                )
+                module.fail_json(**result)
             command = (
                 f"z cert sign --name {shard_name} --name {replica_domain} "
-                f"--ip 127.0.0.1 --ip $(dig +short {replica_domain})"
+                f"--ip 127.0.0.1 --ip {resolved_ip}"
             )
             result["commands"].append(command)
 
             # Generate certificates for replicas
             for replica in range(1, num_replicas):
-                replica_name = f"zygote-{token}-{shard_letter}-{replica}"
-                replica_domain = f"shard-{shard_letter}-{replica}.{domain}"
+                replica_name = f"{tenant}-{token}-{shard_letter}-{replica}"
+                replica_domain = f"{node_type}-{shard_letter}-{replica}.{domain}"
+                try:
+                    resolved_ip = resolve_domain_ip(replica_domain)
+                except ValueError as e:
+                    result["msg"] = (
+                        f"Failed to resolve IP for replica domain {replica_domain}: {e}"
+                    )
+                    module.fail_json(**result)
                 command = (
                     f"z cert sign --name {replica_name} --name {replica_domain} "
-                    f"--ip 127.0.0.1 --ip $(dig +short {replica_domain})"
+                    f"--ip 127.0.0.1 --ip {resolved_ip}"
                 )
                 result["commands"].append(command)
 
@@ -193,26 +260,26 @@ def run_module():
         # Execute each command
         for command in result["commands"]:
             rc, stdout, stderr = module.run_command(command, use_unsafe_shell=True)
-            result["results"].append({
-                "cmd": command,
-                "rc": rc,
-                "stdout": stdout,
-                "stderr": stderr,
-            })
+            result["results"].append(
+                {
+                    "cmd": command,
+                    "rc": rc,
+                    "stdout": stdout,
+                    "stderr": stderr,
+                }
+            )
             if rc != 0:
-                module.fail_json(
-                    msg=f"Failed to execute command: {command} (rc={rc}, stderr={stderr})",
-                    **result,
+                result["msg"] = (
+                    f"Failed to execute command: {command} (rc={rc}, stderr={stderr})"
                 )
+                module.fail_json(**result)
 
         # Exit with success
         module.exit_json(**result)
 
     except Exception as e:
-        module.fail_json(
-            msg=f"Error generating or executing certificate commands: {str(e)}",
-            **result,
-        )
+        result["msg"] = f"Error generating or executing certificate commands: {str(e)}"
+        module.fail_json(**result)
 
 
 def main():

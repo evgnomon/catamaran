@@ -2,7 +2,7 @@ dependencies:
   - role: evgnomon.catamaran.z_defaults
 galaxy_info:
   author: Hamed Ghasemzadeh
-  description: Sign certificates
+  description: Sign certificate
   license_file: COPYING
   min_ansible_version: 2.9
   platforms:

@@ -1,4 +1,9 @@
 ---
+- include_role:
+    name: z_install
+  vars:
+    z_target: "{{ z_service_name }}"
+
 - name: Ensure service user exists
   user:
     name: "{{ z_service_user }}"
@@ -40,13 +45,6 @@
     enabled: "{{ z_service_enabled }}"
   become: yes
 
-- name: Sign service accounts
-  command: "z cert sign --name {{ z_service_domain }}"
-  args:
-    creates: "{{ z_service_cert_file }}"
-  environment:
-    ZYGOTE_CONFIG_HOME: "{{ z_service_working_dir }}"
-
 - name: Recursively set ownership of cert_dir to service user
   ansible.builtin.file:
     path: "{{ z_service_cert_dir }}"
@@ -66,9 +64,13 @@
 - name: Reload systemd
   command: systemctl daemon-reload
   become: yes
+  tags:
+    - deploy
 
 - name: Restart {{ z_service_name }}
   systemd:
     name: "{{ z_service_name }}"
     state: restarted
   become: yes
+  tags:
+    - deploy

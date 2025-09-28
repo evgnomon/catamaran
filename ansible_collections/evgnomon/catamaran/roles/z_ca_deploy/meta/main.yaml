@@ -1,5 +1,6 @@
 dependencies:
   - role: z_lib_var
+
 galaxy_info:
   author: Hamed Ghasemzadeh
   description: Deploy CA (public) certificate to the remote host

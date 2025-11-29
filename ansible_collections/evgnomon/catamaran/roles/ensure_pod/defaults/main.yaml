@@ -1,12 +1,7 @@
-z_container_full_name: "{{ z_user }}-{{ z_node_type }}-{{ z_container_name }}-{{ z_suffix }}"
 z_container_user: "{{ z_user }}"
 z_container_group: "{{ z_container_user }}"
-z_container_working_dir: "{{z_backup_dir}}/{{ z_container_name }}/var"
-z_container_config_dir: "{{z_backup_dir}}/{{ z_container_name }}/etc"
 z_container_domain: "{{ inventory_hostname }}"
 z_use_domain_cert: false
-z_mount_workdir: "/var/lib/{{ z_container_name }}"
-z_mount_configdir: "/etc/{{ z_container_name }}"
 z_service_env_vars:
   Z_DOMAIN: "{{ inventory_hostname.split('.')[1:] | join('.') }}"
   Z_HOST: "{{ inventory_hostname }}"
@@ -14,16 +9,9 @@ z_service_env_vars:
   USE_DOMAIN_CERT: "{{ true if z_use_domain_cert else false }}"
 z_container_create_home: false
 z_container_state: "started"
-z_container_cert_dir: "/etc/{{ z_container_name }}/certs"
-
-z_mount_cert_ca_file: "/etc/{{ z_container_name }}/certs/ca/ca_cert.pem"
-z_mount_cert_func_dir: "/etc/{{ z_container_name }}/certs/functions/{{ z_container_full_name }}"
-
-z_mount_cert_func_pub: "{{ z_mount_cert_func_dir }}/{{ z_container_full_name }}_cert.pem"
-z_mount_cert_func_key: "{{ z_mount_cert_func_dir }}/{{ z_container_full_name }}_key.pem"
-z_mount_cert_func_p12: "{{ z_mount_cert_func_dir }}/{{ z_container_full_name }}.p12"
 
 z_container_volumes: []
 z_container_command: ""
 z_container_restart_policy: "unless-stopped"
 z_container_user_in_container: "root"
+z_container_ports: []

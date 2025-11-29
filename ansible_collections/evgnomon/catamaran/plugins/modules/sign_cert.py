@@ -112,11 +112,6 @@ EXAMPLES = r"""
     node_type: node
   register: cert_result
 
-# Display the execution result
-- name: Show command execution result
-  ansible.builtin.debug:
-    msg: "{{ cert_result.result }}"
-
 # Run in check mode to preview command without execution
 - name: Preview certificate command
   evgnomon.catamaran.sign_cert:
@@ -230,7 +225,7 @@ def run_module():
         # Generate certificate name and domain based on shard parameter
         if shard == "main" or shard == "" or shard == "0":
             # Main shard certificate (no replica suffix)
-            cert_name = f"{tenant}-{token}-{replica}.{domain}"
+            cert_name = f"{tenant}-{node_type}-{token}-{replica}.{domain}"
             short_name = f"{node_type}-{token}-{replica}"
             cert_domain = f"{node_type}-{replica}.{domain}"
             if token is None or token == "":
@@ -238,7 +233,7 @@ def run_module():
                 short_name = f"{node_type}-{replica}"
         else:
             # Replica certificate with shard suffix
-            cert_name = f"{tenant}-{token}-{replica}-{shard}.{domain}"
+            cert_name = f"{tenant}-{node_type}-{token}-{replica}-{shard}.{domain}"
             short_name = f"{node_type}-{token}-{replica}-{shard}"
             cert_domain = f"{node_type}-{replica}-{shard}.{domain}"
             if token is None or token == "":

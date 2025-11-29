@@ -4,19 +4,6 @@
   vars:
     token: "{{ function_name }}"
 
-- name: Debug z_certs_ca_src variable
-  debug:
-    var: z_certs_ca_src
-
-- name: Debug ca_cert_file variable
-  debug:
-    var: ca_cert_file
-
-
-- name: Debug dest variable
-  debug:
-    var: dest
-
 - name: Copy CA certificate to remote machines
   copy:
     src: '{{ z_certs_ca_src }}/ca_cert.pem'
@@ -25,7 +12,6 @@
     group: root
     mode: "0644"
   become: true
-
 
 - name: Deploy function certificates
   copy:

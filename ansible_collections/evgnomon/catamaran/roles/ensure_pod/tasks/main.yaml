@@ -19,8 +19,9 @@
     state: "{{ 'absent' if z_container_state == 'absent' else 'present' }}"
     restart_policy: "{{ z_container_restart_policy }}"
     user: "{{ z_container_user_in_container }}"
-    volume: "{{ z_container_volumes }}"
+    volumes: "{{ z_container_volumes }}"
     env: "{{ z_service_env_vars | default({}) }}"
+    recreate: true
+    ports: "{{ z_container_ports if z_container_ports else omit }}"
   become: true
-  changed_when: true
   notify: "set podman container state"

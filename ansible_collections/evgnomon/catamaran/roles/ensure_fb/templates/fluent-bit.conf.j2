@@ -5,10 +5,10 @@
 [INPUT]
     Name         systemd
     Tag          host.*
-    Path         /run/log/journal
+    Path         /var/log/journal
     DB           {{ z_mount_workdir }}/fluentbit-journal.db
-    Read_From_Tail On
 
+{% if not z_fb_receiver %}
 [OUTPUT]
     Name         forward
     Match        *
@@ -19,3 +19,23 @@
     TLS.ca_file  {{ z_mount_cert_ca_file }}
     TLS.crt_file {{ z_mount_cert_func_pub }}
     TLS.key_file {{ z_mount_cert_func_key }}
+{% endif %}
+
+{% if z_fb_receiver %}
+[INPUT]
+    Name              forward
+    Port              24224
+    Listen            0.0.0.0
+    tls               On
+    tls.crt_file     {{ z_mount_cert_func_pub }}
+    tls.key_file      {{ z_mount_cert_func_key }}
+    tls.ca_file       {{ z_mount_cert_ca_file }}
+    tls.verify        On
+
+[OUTPUT]
+    Name            file
+    Match           *
+    Path            {{ z_mount_workdir }}/
+    File            all-logs.log
+    Format          plain
+{% endif %}

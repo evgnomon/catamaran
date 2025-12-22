@@ -1,8 +1,24 @@
-#!/bin/sh
+!/usr/bin/env bash
 
-set -e
+if [ -f "go.mod" ]; then
+  export GOFLAGS="-buildvcs=false"
+  go fmt ./...
+  golangci-lint run
+  go test -v ./...
 
-export GOFLAGS="-buildvcs=false"
-go fmt ./...
-golangci-lint run
-go test -v ./...
+elif [ -f "package.json" ]; then
+  echo not implemented
+
+elif [ -f build.zig ]; then
+  zig build test -Doptimize=Debug
+
+elif [ -f "CMakeLists.txt" ]; then
+  echo not implemented
+
+elif [ -f "pyproject.toml" ]; then
+  echo not implemented
+
+else
+  echo "No recognized build configuration found."
+  exit 1
+fi

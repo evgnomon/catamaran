@@ -124,7 +124,7 @@ async def run_module():
     context = module.params["context"]
     actor = module.params.get("user", owner)
 
-    tag = tag.raplace("/", "-")
+    tag = tag.replace("/", "-")
 
     docker_sock = os.getenv("DOCKER_SOCK", get_docker_socket())
     docker_client = docker.APIClient(base_url=docker_sock)

@@ -37,6 +37,7 @@ elif [ -f "package.json" ]; then
 
 elif [ -f build.zig ]; then
   zig build -Doptimize=ReleaseFast
+  mkdeb
 
 elif [ -f "CMakeLists.txt" ]; then
   mkdir -p build_cmake

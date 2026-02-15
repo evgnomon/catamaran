@@ -73,7 +73,7 @@
     - nginx_state == "present"
     - nginx_auto_start
   register: kube_play_result
-  changed_when: "'Pod' in kube_play_result.stdout or 'Deployment' in kube_play_result.stdout"
+  changed_when: "'Pod' in kube_play_result.stdout"
   tags:
     - nginx
     - deploy

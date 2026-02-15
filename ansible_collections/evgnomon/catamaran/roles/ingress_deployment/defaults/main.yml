@@ -9,7 +9,6 @@
 nginx_state: present  # "present" to deploy all resources, "absent" to remove them
 nginx_app_name: nginx-demo
 nginx_image: docker.io/library/nginx:alpine
-curl_image: docker.io/curlimages/curl:latest
 
 # -----------------------------------------------------------------------------
 # Networking
@@ -26,20 +25,11 @@ nginx_cpu_limit: "250m"
 nginx_memory_request: "64Mi"
 nginx_cpu_request: "100m"
 
-# DaemonSet uses lighter resources
-nginx_daemonset_memory_limit: "64Mi"
-nginx_daemonset_cpu_limit: "100m"
-
 # -----------------------------------------------------------------------------
 # Storage
 # -----------------------------------------------------------------------------
 nginx_pvc_storage_size: 100Mi
 nginx_pvc_access_mode: ReadWriteOnce
-
-# -----------------------------------------------------------------------------
-# Deployment
-# -----------------------------------------------------------------------------
-nginx_deployment_replicas: 2
 
 # -----------------------------------------------------------------------------
 # Health Checks
@@ -49,21 +39,6 @@ nginx_liveness_initial_delay: 5
 nginx_liveness_period: 10
 nginx_readiness_initial_delay: 3
 nginx_readiness_period: 5
-
-# -----------------------------------------------------------------------------
-# Secrets (override these in your playbook or vault!)
-# -----------------------------------------------------------------------------
-nginx_secret_username: admin
-nginx_secret_password: supersecret123
-nginx_secret_api_key: my-api-key-12345
-
-# -----------------------------------------------------------------------------
-# Job Settings
-# -----------------------------------------------------------------------------
-nginx_job_ttl_seconds: 300
-nginx_job_backoff_limit: 3
-nginx_job_retry_count: 5
-nginx_job_retry_delay: 2
 
 # -----------------------------------------------------------------------------
 # File Paths

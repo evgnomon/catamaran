@@ -37,7 +37,6 @@ elif [ -f "package.json" ]; then
 
 elif [ -f build.zig ]; then
   zig build -Doptimize=ReleaseFast
-  mkdeb
 
 elif [ -f "CMakeLists.txt" ]; then
   mkdir -p build_cmake
@@ -52,4 +51,8 @@ elif [ -f "pyproject.toml" ]; then
 else
   echo "No recognized build configuration found."
   exit 1
+fi
+
+if [ -f ".deb.json" ]; then
+  mkdeb
 fi

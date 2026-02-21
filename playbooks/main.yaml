@@ -6,7 +6,18 @@
   roles:
     - role: z_secrets
     - role: z_defaults
-    - role: z_build
+  tasks:
+    - name: poetry install
+      shell: |
+        poetry install
+      args:
+        chdir: "{{ workspace }}"
+    - name: Checks
+      tags: z
+      shell: |
+        poetry run poe check
+      args:
+        chdir: "{{ workspace }}"
 
 - name: Publish Galaxy Collection
   hosts: localhost

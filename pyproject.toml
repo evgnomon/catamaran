@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "catamaran"
-version = "0.2.12"
+version = "0.2.13"
 description = "GitOps scripts for yacht users"
 authors = ["Hamed Ghasemzadeh <hg@evgnomon.org>"]
 readme = "README.md"

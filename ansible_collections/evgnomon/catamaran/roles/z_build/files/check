@@ -7,16 +7,22 @@ if [ -f "go.mod" ]; then
   go test -v ./...
 
 elif [ -f "package.json" ]; then
-  echo not implemented
+  npm install
+  npm run test
 
 elif [ -f build.zig ]; then
   zig build test -Doptimize=Debug
 
 elif [ -f "CMakeLists.txt" ]; then
-  echo not implemented
+  echo not implemented for CMAKE
 
-elif [ -f "pyproject.toml" ]; then
-  echo not implemented
+elif [ -f "poetry.lock" ]; then
+  poetry sync
+  poetry run poe check
+
+elif [ -f "uv.lock" ]; then
+  uv sync
+  uv run poe check
 
 else
   echo "No recognized build configuration found."

@@ -45,8 +45,13 @@ elif [ -f "CMakeLists.txt" ]; then
   cmake --build . --config Release
   cd ..
 
-elif [ -f "pyproject.toml" ]; then
-  ./python/build
+elif [ -f "poetry.lock" ]; then
+  poetry sync
+  poetry build
+
+elif [ -f "uv.lock" ]; then
+  uv sync
+  uv build
 
 else
   echo "No recognized build configuration found."

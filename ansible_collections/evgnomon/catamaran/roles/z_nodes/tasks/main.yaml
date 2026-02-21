@@ -3,7 +3,7 @@
   hetzner.hcloud.server:
     api_token: "{{ secrets.hetzner.prod }}"
     name: "{{ vm_name }}"
-    server_type: cpx11
+    server_type: '{{ item.get("server_type", "cpx22") }}'
     image: debian-13
     location: "{{ item.get('location', 'nbg1') }}"
     state: '{{ item.get("state") if "state" in item else "absent" if z_event_type == "delete" else "present" }}'
@@ -36,9 +36,9 @@
   when: z_nodes.hetzner | selectattr('volumes', 'defined') | list | length > 0
 
 - name: Attach volumes to Hetzner servers
-  hetzner.hcloud.volume_attachment:
+  hetzner.hcloud.volume:
     api_token: "{{ secrets.hetzner.prod }}"
-    volume: "{{ volume.name }}"
+    name: "{{ volume.name }}"
     server: "{{ vm_name }}"
     automount: false
     state: '{{ volume.get("state") if "state" in volume else "absent" if z_event_type == "delete" else "present" }}'

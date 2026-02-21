@@ -5,12 +5,7 @@
     - evgnomon.catamaran
   pre_tasks:
     - shell: |
-        set -e
-        pip install pipx
-        pipx install poetry
-        ~/.local/bin/poetry sync
-        ~/.local/bin/poetry build
-        ~/.local/bin/poetry env info
+        pip install uv
   roles:
     - role: z_secrets
     - role: z_defaults

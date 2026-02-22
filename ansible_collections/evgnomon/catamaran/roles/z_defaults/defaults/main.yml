@@ -7,7 +7,7 @@ github_actor: "{{ lookup('env', 'GITHUB_ACTOR') }}"
 z_event_type: "{{ lookup('env', 'YACHT_EVENT_NAME') or lookup('env', 'GITHUB_EVENT_NAME') | default('push') }}"
 z_state: "{{ 'absent' if z_event_type == 'delete' else 'present' }}"
 z_ref_pull_request_ref: "{{ github_event.pull_request.head.ref if 'pull_request' in github_event else '' }}"
-z_ref_name: '{{ z_ref_pull_request_ref if z_ref_pull_request_ref else github_event.ref if "ref" in github_event else lookup("env", "YACHT_REF_NAME") }}'
+z_ref_name: '{{ z_ref_pull_request_ref if z_ref_pull_request_ref else github_event.ref if "ref" in github_event else lookup("env", "YACHT_REF_NAME") or "refs/heads/main" }}'
 z_env_name:  '{{ z_ref_name.replace("refs/heads/","").replace("/","-").replace("_","-") }}'
 z_user_token: '{{ lookup("env", "INPUT_GITHUB_TOKEN") or (secrets.github_pat if secrets and "github_pat" in secrets else "")}}'
 z_tag: "{{ (github_event.get('ref') | regex_replace('refs/tags/', '')) if 'refs/tags' in github_event.get('ref','') else '' }}"

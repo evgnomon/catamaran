@@ -4,7 +4,9 @@ set -e
 
 [ ! -d ./dist ] && mkdir ./dist
 
-if [ -f "go.mod" ]; then
+if [ -f "Makefile" ]; then
+  make build
+elif [ -f "go.mod" ]; then
   export GOFLAGS="-buildvcs=false"
 
   # Define target operating systems and architectures
@@ -58,6 +60,8 @@ else
   exit 1
 fi
 
-if [ -f ".deb.json" ]; then
+if [ -f "Makefile" ]; then
+  make dist
+elif [ -f ".deb.json" ]; then
   mkdeb
 fi

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-if [ -f "go.mod" ]; then
+if [ -f "Makefile" ]; then
+  make check
+
+elif [ -f "go.mod" ]; then
   export GOFLAGS="-buildvcs=false"
   go fmt ./...
   golangci-lint run
@@ -15,10 +18,6 @@ elif [ -f build.zig ]; then
 
 elif [ -f "CMakeLists.txt" ]; then
   echo not implemented for CMAKE
-
-elif [ -f "poetry.lock" ]; then
-  poetry sync
-  poetry run poe check
 
 elif [ -f "uv.lock" ]; then
   uv sync

@@ -6,7 +6,7 @@ authors = [
     { name = "Hamed Ghasemzadeh", email = "hg@evgnomon.org" }
 ]
 readme = "README.md"
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.11,<3.15"
 dependencies = [
     "typer>=0.12.5,<0.13",
     "pyyaml>=6.0.2,<7",

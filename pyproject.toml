@@ -1,6 +1,6 @@
 [project]
 name = "catamaran"
-version = "0.2.14"
+version = "0.2.15"
 description = "GitOps scripts for yacht users"
 authors = [
     { name = "Hamed Ghasemzadeh", email = "hg@evgnomon.org" }

@@ -1,6 +1,7 @@
 name: Yacht
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "*"
